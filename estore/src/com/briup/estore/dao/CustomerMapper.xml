@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.estore.dao.ICustomerDao">
+	<!-- 注意在mybatis中写sql的时候,sql语句的结尾不要加分号 -->
+	
+	<insert id="saveCustomer" parameterType="Customer">
+		
+		<selectKey resultType="long" keyProperty="id" order="BEFORE">
+			select my_seq.nextval from dual
+		</selectKey>
+		
+		insert into tbl_customer(id,name,password,zip,address,telephone,email)
+		values(#{id},#{name},#{password},#{zip},#{address},#{telephone},#{email})
+		
+	</insert>
+	
+	
+	<select id="findByName" parameterType="string" resultType="Customer">
+		select id,name,password,zip,address,telephone,email
+		from tbl_customer
+		where name = #{name}
+	</select>
+	
+	<update id="updateCustomer" parameterType="Customer">
+		<!-- 
+		update tbl_customer
+		<set>
+			<if test="password != null">
+				password = #{password},
+			</if>
+			<if test="zip != null">
+				zip = #{zip},
+			</if>
+			<if test="address != null">
+				address = #{address},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone},
+			</if>
+			<if test="email != null">
+				email = #{email},
+			</if>
+		</set> 
+		where id = #{id}
+		-->
+		update tbl_customer
+		set
+			password = #{password},
+			zip = #{zip},
+			address = #{address},
+			telephone = #{telephone},
+			email = #{email}
+		where 
+			id = #{id}
+	</update>
+	
+	
+</mapper>			

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.estore.dao.IOrderDao">
+	<!-- 注意在mybatis中写sql的时候,sql语句的结尾不要加分号 -->
+	
+	<insert id="saveOrder" parameterType="Order">
+		<selectKey resultType="long" keyProperty="id" order="BEFORE">
+			select my_seq.nextval from dual
+		</selectKey>
+		
+		insert into tbl_order(id,cost,orderDate,customer_id)
+		values(#{id},#{cost},#{orderDate},#{customer.id})
+		
+	</insert>
+	
+	<select id="findOrderByCustomerId" parameterType="long" resultType="Order">
+		select id,cost,orderDate,customer_id
+		from tbl_order
+		where customer_id = #{id}
+	</select>
+	
+	
+</mapper>			
