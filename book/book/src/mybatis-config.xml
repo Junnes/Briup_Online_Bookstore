@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="mybatis.properties"></properties>
+	<typeAliases>
+		<package name="com.briup.bean"/>
+	</typeAliases>
+	<environments default="oracle">
+		<environment id="oracle">
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/briup/dao/CustomerMapper.xml"/>
+		<mapper resource="com/briup/dao/BookMapper.xml"/>
+		<mapper resource="com/briup/dao/OrderMapper.xml"/>
+		<mapper resource="com/briup/dao/LineMapper.xml"/>
+	</mappers>
+</configuration>

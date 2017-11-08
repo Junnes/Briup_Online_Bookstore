@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.OrderMapper">
+	<insert id="saveOrder" parameterType="Order">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select tbl_order_seq.nextVal from dual
+		</selectKey>
+		insert into tbl_order values (#{id},#{cost},#{orderDate},#{customer.id},#{status})
+	</insert>
+	
+	<select id="findOrdersByCustomerId" parameterType="long" resultType="order">
+		select * from tbl_order where customer_id = #{customer_id} order by orderdate
+	</select>
+	
+	<delete id="deleteOrderById" parameterType="long" >
+		delete from tbl_order where id = #{id}
+	</delete>
+	
+	<select id="findOrderById" parameterType="long" resultType="order" >
+		select * from tbl_order where id = #{id}
+	</select>
+	
+	<update id="updateOrderStatus" parameterType="order">
+		update tbl_order set status = #{status} where id= #{id}
+	</update>
+	
+	
+	<resultMap type="Order" id="OrderResultWithLineAndBook">
+
+		<id property="id" column="oid" />
+		<result property="cost" column="cost" />
+		<result property="orderDate" column="orderDate" />
+		<collection property="lines" 
+			resultMap="LineResult"></collection>
+	</resultMap>
+
+	<resultMap type="Line" id="LineResult">
+		<id property="id" column="lid" />
+		<result property="num" column="num" />
+		<association property="book" column="book_id" resultMap="BookResult"></association>
+	</resultMap>
+
+	<resultMap type="Book" id="BookResult">
+		<id property="id" column="bid" />
+		<result property="name" column="name" />
+		<result property="price" column="price" />
+	</resultMap>
+
+	<select id="findOrderWithCustomerAndLineById" parameterType="long"
+		resultMap="OrderResultWithLineAndBook">
+		select o.id oid,o.cost,o.orderDate,o.customer_id, l.id
+		lid,l.num,l.order_id,l.book_id, b.id bid,b.name,b.price
+		from tbl_order
+		o,tbl_line l,tbl_book b
+		where o.id=#{id}
+		and
+		o.id = l.order_id
+		and
+		l.book_id = b.id
+	</select>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.BookMapper">
+	<select id="listBook" resultType="book">
+		 select * from (
+			select rownum r,tbl_book.* from tbl_book where rownum &lt;= #{param1}
+ 		) where r > #{param2}
+	</select>
+	
+	<select id="findTotalCount" resultType="long">
+		select count(*) from tbl_book
+	</select>
+	
+	<resultMap type="book" id="bookResult">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="price" column="price" />
+		<result property="writer" column="writer" />
+		<result property="publish" column="name" />
+		<result property="pages" column="pages" />
+		<result property="image" column="images" />
+		<association property="category" javaType="Category">
+			<id property="id" column="cid"/>
+			<result property="name" column="cname" />
+			<result property="description" column="cdescription" />
+		</association>
+	</resultMap>
+	<select id="findBookById" resultMap="bookResult" parameterType="long">
+		select tb.id,tb.name,tb.description,tb.price,tb.writer,
+		tb.publish,tb.pages,tb.images,tc.id as cid,tc.name as cname,tc.description as cdescription
+		from tbl_book tb,tbl_category tc
+		where tb.categoryid = tc.id
+		and tb.id = #{id}
+	</select>
+	
+	<select id="findBookByName" parameterType="String" resultType="book">
+		select tb.id,tb.name,tb.description,tb.price,tb.writer,
+		tb.publish,tb.pages,tb.images,tc.id as cid,tc.name as cname,tc.description as cdescription
+		from tbl_book tb,tbl_category tc
+		where tb.categoryid = tc.id
+		and tb.name like #{name}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+

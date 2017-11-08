@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.LineMapper">
+	<insert id="saveLines" parameterType="line">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">
+			select tbl_line_seq.nextVal from dual
+		</selectKey>
+		insert into tbl_line values (#{id},#{num},#{order.id},#{book.id})
+	</insert>
+	
+	<delete id="removeLinesByOrderId" parameterType="long">
+		delete from tbl_line where order_id = #{orderId}
+	</delete>
+	
+	<resultMap type="line" id="lineResult">
+		<id property="id" column="id" />
+		<result property="num" column="num" />
+		<association property="book" javaType="Book">
+			<id property="id" column="bid" />
+			<result property="name" column="name" />
+			<result property="description" column="description" />
+			<result property="price" column="price" />
+			<result property="writer" column="writer" />
+			<result property="publish" column="name" />
+			<result property="pages" column="pages" />
+			<result property="image" column="images" />
+		</association>
+	</resultMap>
+	<select id="findLinesByOrderId" parameterType="long" resultMap="lineResult" >
+		select tl.id,tl.num,tb.id as bid,tb.name,tb.description,tb.price,tb.writer,
+		tb.publish,tb.pages,tb.images
+		from tbl_line tl,tbl_book tb 
+		where tl.book_id = tb.id and tl.order_id = #{orderId}
+	</select>
+</mapper>
